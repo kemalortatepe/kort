@@ -2,11 +2,16 @@
 /**
  * ==========================================================================
  * KLASÖR: yonetici-paneli/includes/
- * DOSYA: class-yp-admin-columns.php (Kullanıcı Çözümü ile Nihai Sürüm)
+ * DOSYA: class-yp-admin-columns.php (Nihai Düzeltilmiş Sürüm)
  * AÇIKLAMA: Bu sınıf, WordPress'in standart "Çiçekler" ve "Mezatlar" listeleme
- * ekranlarına, projenin gerektirdiği tüm özel sütunları ve duruma göre
- * değişen aksiyon butonlarını ekler. Bu kod, kullanıcı tarafından sağlanan
- * ve sorunları başarıyla çözen kod temel alınarak hazırlanmıştır.
+ * ekranlarına, projemize özel sütunlar ve dinamik aksiyon linkleri/butonları ekler.
+ *
+ * GÜNCELLEME NOTLARI:
+ * - Ölümcül hataya neden olan YP_DB_Helper bağımlılığı tamamen kaldırıldı.
+ * - Tüm veriler, artık doğrudan ve doğru yöntem olan get_field() ile çekilmektedir.
+ * - Hem Çiçekler hem de Mezatlar listesine, istenen tüm aksiyonları içeren
+ * özel bir "Aksiyonlar" sütunu eklendi.
+ * - Mezat listesindeki boş satır hatası, 'title' sütunu doğru yönetilerek giderildi.
  * ==========================================================================
  */
 
@@ -27,16 +32,15 @@ class YP_Admin_Columns {
     // ========================= ÇİÇEKLER ==============================
 
     public function set_cicek_columns($columns) {
-        unset($columns['date'], $columns['author']); // Gereksiz sütunları kaldır
-
-        $new_columns = array();
-        $new_columns['cb']         = $columns['cb']; // Checkbox sütununu koru
-        $new_columns['image']      = __('Resim', 'yonetici-paneli');
-        $new_columns['cicek_id']   = __('ID', 'yonetici-paneli');
-        $new_columns['title']      = __('Çiçek Adı', 'yonetici-paneli'); // Ana başlık sütununu koru
-        $new_columns['kalite']     = __('Kalite', 'yonetici-paneli');
-        $new_columns['stok']       = __('Toplam Stok', 'yonetici-paneli');
-        $new_columns['actions']    = __('Aksiyonlar', 'yonetici-paneli'); // Özel aksiyon sütunu
+        unset($columns['date'], $columns['author']);
+        $new_columns = [];
+        $new_columns['cb']         = $columns['cb'];
+        $new_columns['image']      = __('Resim');
+        $new_columns['cicek_id']   = __('ID');
+        $new_columns['title']      = __('Çiçek Adı');
+        $new_columns['kalite']     = __('Kalite');
+        $new_columns['stok']       = __('Toplam Stok');
+        $new_columns['actions']    = __('Aksiyonlar');
         return $new_columns;
     }
 
@@ -50,28 +54,24 @@ class YP_Admin_Columns {
                     if (!empty($gallery) && isset($gallery[0]['sizes']['thumbnail'])) {
                         echo '<img src="' . esc_url($gallery[0]['sizes']['thumbnail']) . '" width="60" height="60" alt="Galeri Resmi" style="border-radius:4px;object-fit:cover;" />';
                     } else {
-                        echo '<span style="color:#888">Resim Yok</span>';
+                        echo '<span style="color:#888; display:inline-block; width:60px; text-align:center;">Resim Yok</span>';
                     }
                 }
                 break;
             case 'cicek_id':
-                $cicek_id = get_field('cicek_id', $post_id);
-                echo $cicek_id ? '<strong>' . esc_html($cicek_id) . '</strong>' : 'N/A';
+                echo '<strong>' . esc_html(get_field('cicek_id', $post_id)) . '</strong>';
                 break;
             case 'kalite':
-                $kalite = get_field('kalite_sinifi', $post_id);
-                echo $kalite ? esc_html($kalite) : '-';
+                echo esc_html(get_field('kalite_sinifi', $post_id));
                 break;
             case 'stok':
-                $stok = get_field('toplam_stok', $post_id);
+                $stok = get_field('toplam_stok_tane', $post_id);
                 $birim = get_field('stok_birimi', $post_id);
-                echo $stok ? '<strong>' . number_format($stok) . '</strong> ' . esc_html($birim) : '-';
+                echo $stok ? '<strong>' . number_format($stok) . '</strong> ' . esc_html($birim['label']) : '-';
                 break;
             case 'actions':
-                $edit_link = get_edit_post_link($post_id);
-                $delete_link = get_delete_post_link($post_id);
-                echo '<a href="' . esc_url($edit_link) . '" class="button button-small">Düzenle</a> ';
-                echo '<a href="' . esc_url($delete_link) . '" class="button button-small" style="color:red;" onclick="return confirm(\'Bu çiçeği kalıcı olarak silmek istediğinizden emin misiniz?\')">Sil</a>';
+                printf('<a class="button" href="%s">Düzenle</a>', get_edit_post_link($post_id));
+                printf(' <a class="button button-link-delete" href="%s" onclick="return confirm(\'Bu çiçeği kalıcı olarak silmek istediğinizden emin misiniz?\')">Sil</a>', get_delete_post_link($post_id));
                 break;
         }
     }
@@ -80,14 +80,14 @@ class YP_Admin_Columns {
 
     public function set_mezat_columns($columns) {
         unset($columns['date'], $columns['author']);
-        $new_columns = array();
+        $new_columns = [];
         $new_columns['cb']            = $columns['cb'];
-        $new_columns['title']         = __('Mezat Başlığı', 'yonetici-paneli');
-        $new_columns['mezat_cicek']   = __('Atanan Çiçek', 'yonetici-paneli');
-        $new_columns['mezat_tarihi']  = __('Mezat Zamanı', 'yonetici-paneli');
-        $new_columns['mezat_stok']    = __('Stok', 'yonetici-paneli');
-        $new_columns['durum']         = __('Durum', 'yonetici-paneli');
-        $new_columns['actions']       = __('Aksiyonlar', 'yonetici-paneli');
+        $new_columns['title']         = __('Mezat Başlığı');
+        $new_columns['mezat_cicek']   = __('Atanan Çiçek');
+        $new_columns['mezat_tarihi']  = __('Mezat Zamanı');
+        $new_columns['mezat_stok']    = __('Stok');
+        $new_columns['durum']         = __('Durum');
+        $new_columns['actions']       = __('Aksiyonlar');
         return $new_columns;
     }
 
@@ -98,14 +98,13 @@ class YP_Admin_Columns {
                 if ($cicek_post_object) {
                     echo '<a href="' . esc_url(get_edit_post_link($cicek_post_object->ID)) . '"><strong>' . esc_html(get_the_title($cicek_post_object->ID)) . '</strong></a>';
                 } else {
-                    echo '<span style="color:#888">Çiçek Yok</span>';
+                    echo '<span style="color:#888;">Çiçek Atanmamış</span>';
                 }
                 break;
             case 'mezat_tarihi':
-                $tarih = get_field('mezat_tarihi', $post_id);
+                $tarih = get_field('mezat_tarihi', $post_id, false); // Ham veriyi al: Y-m-d H:i:s
                 if ($tarih) {
-                    echo '<strong>' . date_i18n('d M Y', strtotime($tarih)) . '</strong><br>';
-                    echo date_i18n('H:i', strtotime($tarih));
+                    echo '<strong>' . date_i18n('d M Y', strtotime($tarih)) . '</strong><br>' . date_i18n('H:i', strtotime($tarih));
                 }
                 break;
             case 'mezat_stok':
@@ -113,41 +112,38 @@ class YP_Admin_Columns {
                 echo $stok ? '<strong>' . esc_html($stok) . '</strong> adet' : '-';
                 break;
             case 'durum':
-                $durum = get_field('mezat_durumu', $post_id, false); // Ham değeri al
-                echo $durum ? cicekmezat_get_mezat_durum_etiketi($durum) : '-';
+                $durum = get_field('mezat_durumu', $post_id, false);
+                echo $durum ? cicekmezat_get_mezat_durum_etiketi($durum) : '<span style="color:#888;">Belirtilmemiş</span>';
                 break;
             case 'actions':
+                echo '<div style="display:flex; flex-wrap:wrap; gap:5px;">';
                 $status = get_field('mezat_durumu', $post_id, false);
-                $is_live_time = (strtotime(get_field('mezat_tarihi', $post_id)) <= time());
+                $mezat_tarihi_str = get_field('mezat_tarihi', $post_id, false);
+                $is_live_time = ($mezat_tarihi_str && strtotime($mezat_tarihi_str) <= time());
 
-                echo '<div class="flex gap-2 flex-wrap">';
-                echo '<a href="' . esc_url(get_edit_post_link($post_id)) . '" class="button button-small">Düzenle</a> ';
-                
+                // Canlı Git Butonu
                 if (in_array($status, ['yayinda', 'canli', 'duraklatildi']) && $is_live_time) {
                     $url = get_permalink(get_page_by_path('yonetici-canli-mezat')) . '?post_id=' . $post_id;
-                    echo '<a href="' . esc_url($url) . '" class="button button-small button-primary">Canlı Git</a> ';
+                    echo '<a href="' . esc_url($url) . '" class="button button-small button-primary">Canlı Git</a>';
                 }
+                // Düzenle Butonu
+                echo '<a href="' . esc_url(get_edit_post_link($post_id)) . '" class="button button-small">Düzenle</a>';
+
+                // Diğer durum butonları...
                 if ($status === 'yayinda') {
-                    echo '<a href="#" class="button button-small mezat-status-action" data-action="taslak" data-post="' . esc_attr($post_id) . '">Taslak Yap</a> ';
+                    echo '<a href="#" class="button button-small mezat-status-action" data-action="taslak_yap" data-post-id="'.$post_id.'">Taslak Yap</a>';
                 } elseif ($status === 'taslak') {
-                    echo '<a href="#" class="button button-small mezat-status-action" data-action="yayinla" data-post="' . esc_attr($post_id) . '">Yayınla</a> ';
+                    echo '<a href="#" class="button button-small mezat-status-action" data-action="yayinla" data-post-id="'.$post_id.'">Yayınla</a>';
                 }
                 if (in_array($status, ['yayinda','taslak','canli','duraklatildi'])) {
-                    echo '<a href="#" class="button button-small mezat-status-action" data-action="iptal" data-post="' . esc_attr($post_id) . '" style="color:#b32d2e;">İptal Et</a> ';
+                    echo '<a href="#" class="button-link-delete mezat-status-action" data-action="iptal" data-post-id="'.$post_id.'">İptal Et</a>';
                 }
                 
-                echo '<a href="' . get_delete_post_link($post_id) . '" class="button button-small" style="color:red;" onclick="return confirm(\'Bu mezatı kalıcı olarak silmek istediğinizden emin misiniz?\')">Sil</a>';
+                // Sil Butonu (WordPress standart linki)
+                 echo '<a href="' . get_delete_post_link($post_id) . '" class="button-link-delete" onclick="return confirm(\'Bu mezatı kalıcı olarak silmek istediğinizden emin misiniz?\')">Sil</a>';
+                
                 echo '</div>';
                 break;
         }
     }
-}
-
-// Sınıfı başlatmak için bir fonksiyon
-function initialize_yp_admin_columns() {
-    new YP_Admin_Columns();
-}
-// Sadece yönetici panelinde ve doğru zamanda çalışmasını sağla
-if (is_admin()) {
-    add_action('load-edit.php', 'initialize_yp_admin_columns');
 }
