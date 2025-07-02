@@ -1,0 +1,68 @@
+/**
+ * ==========================================================================
+ * KLASÖR: yonetici-paneli/assets/css/
+ * DOSYA: admin-style.css (WordPress Arayüzüne Uyumlu)
+ * ==========================================================================
+ *
+ * YENİ YAPIYA GÖRE GÜNCELLENMİŞTİR.
+ * Bu dosya artık tam bir tema uygulamak yerine, WordPress'in standart yönetici
+ * arayüzü üzerine küçük ve gerekli stil düzenlemelerini yapar.
+ */
+
+/* Ana Panel (Dashboard) Kartları için Özel Stiller */
+.yp-dashboard-card {
+    background-color: #fff;
+    border: 1px solid #c3c4c7;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
+    padding: 24px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.yp-dashboard-card .card-title {
+    margin: 0 0 8px 0;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #50575e;
+    text-transform: uppercase;
+}
+
+.yp-dashboard-card .card-number {
+    margin: 0;
+    padding: 0;
+    font-size: 2.5rem; /* 40px */
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* Ödeme Ayarları Sayfası için Hizalama */
+/* Madde 25: WordPress'in standart form-table yapısı kullanıldığı için
+   form elemanları zaten düzgün hizalanacaktır. Bu sınıf,
+   etiketler için standart bir genişlik belirleyerek daha da düzenli olmasını sağlar. */
+.yp-form-table th {
+    width: 250px;
+}
+
+.yp-form-table .description {
+    font-style: italic;
+    color: #50575e;
+}
+
+/* Raporlama Sayfalarında Yazdırma için */
+@media print {
+    /* WordPress admin menüsünü, header'ını ve diğer gereksiz elemanları gizle */
+    #adminmenumain, #wpadminbar, #wpfooter, .yp-header-bar, .no-print {
+        display: none !important;
+    }
+
+    /* Sadece rapor tablosunun olduğu ana içerik alanını tam sayfaya yay */
+    #wpcontent {
+        margin-left: 0 !important;
+        padding: 0 !important;
+    }
+
+    .wrap {
+        margin: 0 !important;
+    }
+}

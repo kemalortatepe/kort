@@ -1,0 +1,27 @@
+{
+    "name": "cicek-mezat/yonetici-paneli",
+    "description": "Çiçek Mezatı projesi için WebSocket sunucusunu ve diğer PHP kütüphanelerini yöneten yapılandırma dosyası.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Sizin Adınız",
+            "email": "emailiniz@example.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.4",
+        "cboden/ratchet": "^0.4.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "CicekMezat\\WebSocket\\": "websocket-server/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
+        }
+    }
+}
