@@ -1,0 +1,31 @@
+/**
+ * ==========================================================================
+ * KLASÖR: cicek-mezat-temasi
+ * DOSYA: style.css (Yeni Mimariye ve Güncel WooCommerce'e Göre)
+ * AÇIKLAMA: Bu dosya, WordPress'in temanızı tanıması için zorunludur.
+ * Tema adı, yazarı, versiyonu gibi meta bilgileri içerir.
+ * Temamızın ana stil kodları, daha organize bir yapı için
+ * `assets/css/main.css` dosyasında yer almaktadır.
+ * ==========================================================================
+ *
+ * @package CicekMezat
+ */
+
+/*
+Theme Name: Cicek Mezati Temasi
+Theme URI: https://example.com/
+Author: Sizin Adınız
+Author URI: https://example.com/
+Description: Çiçek Mezatı projesi için, ACF PRO merkezli yeni mimariye göre geliştirilmiş özel WordPress teması. WooCommerce 9.9.x ve üstü ile uyumludur.
+Version: 2.1
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Tags: auction, custom-theme, real-time, responsive, woocommerce, dark-theme
+Text Domain: cicekmezat
+*/
+
+/* ==========================================================================
+   Bu dosya genellikle sadece tema meta bilgileri için kullanılır.
+   Tüm özel CSS kodlarımız, daha iyi bir organizasyon için
+   /assets/css/main.css dosyasına eklenmiştir.
+   ========================================================================== */

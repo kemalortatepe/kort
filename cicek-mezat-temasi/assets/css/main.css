@@ -1,0 +1,224 @@
+/**
+ * assets/css/main.css
+ *
+ * Çiçek Mezatı Teması için özel stil dosyası.
+ * Bu dosya, Tailwind CSS'in yetersiz kaldığı veya tekrar eden
+ * bileşen stillerini tanımlamak için kullanılır.
+ * functions.php dosyası aracılığıyla siteye dahil edilir.
+ *
+ * @package CicekMezat
+ */
+
+/* ==========================================================================
+   1. Genel Gövde ve Tipografi Stilleri
+   ========================================================================== */
+
+body {
+    /* Sitenin ana yazı tipi ailesini belirler. functions.php'de Google Fonts'tan yüklenir. */
+    font-family: 'Inter', sans-serif;
+    /* Ana arka plan rengi, koyu bir tema için. */
+    background-color: #111827;
+    /* Varsayılan metin rengi. */
+    color: #D1D5DB;
+    /* Yazı tiplerinin daha pürüzsüz görünmesini sağlar. */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================================
+   2. Form Elemanları Stilleri
+   ========================================================================== */
+
+/* Genel form kapsayıcısı için stil */
+.form-container {
+    background-color: #1F2937;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    border: 1px solid #374151;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Form etiketleri için ortak stil */
+.form-label {
+    display: block;
+    font-size: 0.875rem; /* 14px */
+    font-weight: 500;
+    color: #9CA3AF; /* Gri */
+    margin-bottom: 0.25rem;
+}
+
+/* Metin giriş alanları (input, textarea, select) için ortak stil */
+.form-input,
+.form-textarea,
+.form-select {
+    width: 100%;
+    background-color: #374151;
+    color: #E5E7EB;
+    border: 1px solid #4B5563;
+    border-radius: 0.375rem; /* 6px */
+    padding: 0.75rem;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Form elemanlarına odaklanıldığında (focus) uygulanacak stil */
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+    outline: none;
+    border-color: #FBBF24; /* Vurgu Rengi - Sarı */
+    box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.5);
+}
+
+/* Onay kutusu (checkbox) etiketleri için stil */
+.form-checkbox-label {
+    display: flex;
+    align-items: center;
+    color: #D1D5DB;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+/* Onay kutusu (checkbox) için stil */
+.form-checkbox {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+    accent-color: #FBBF24; /* Vurgu Rengi - Sarı */
+}
+
+/* ==========================================================================
+   3. Bileşen Stilleri (Components)
+   ========================================================================== */
+
+/* Müşteri ve Yönetici Panellerindeki genel içerik kartı yapısı */
+.content-card {
+    background-color: #1F2937;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid #374151;
+}
+
+/* Kartların başlıkları için ortak stil */
+.content-card h2 {
+    font-size: 1.5rem; /* 24px */
+    font-weight: 700;
+    color: #FBBF24; /* Sarı */
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #374151;
+    padding-bottom: 1rem;
+}
+
+/* Kenar çubuğu (sidebar) linkleri için stil (Müşteri Paneli) */
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    color: #9CA3AF;
+    font-weight: 500;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.sidebar-link:hover {
+    background-color: #374151;
+    color: #F3F4F6;
+    border-left-color: #FBBF24;
+}
+/* WooCommerce'in aktif menü öğesine verdiği 'is-active' sınıfı ile entegrasyon */
+.woocommerce-MyAccount-navigation-link.is-active > a,
+.sidebar-link.active {
+    background-color: #111827;
+    color: #FBBF24;
+    border-left-color: #FBBF24;
+}
+
+/* ==========================================================================
+   4. Canlı Mezat Sayfası Özel Stilleri
+   ========================================================================== */
+
+/* Fiyatın anlık olarak arttığını veya azaldığını gösteren animasyon sınıfları */
+.price-change-animation {
+    transition: color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+.price-increased {
+    color: #16A34A !important; /* Yeşil */
+    transform: scale(1.05);
+}
+.price-decreased {
+    color: #EF4444 !important; /* Kırmızı */
+    transform: scale(0.95);
+}
+
+/* Animasyonlu geçişler için temel sınıf */
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ==========================================================================
+   5. WooCommerce Özelleştirmeleri
+   ========================================================================== */
+
+/* WooCommerce bildirim kutularının stillerini temamıza uygun hale getiriyoruz. */
+.woocommerce-message, .woocommerce-info, .woocommerce-error, .woocommerce-noreviews, p.no-comments {
+    background-color: #374151 !important;
+    color: #D1D5DB !important;
+    border-top-color: #FBBF24 !important;
+    border-radius: 0.5rem;
+    padding-left: 3.5rem !important; /* İkon için yer aç */
+}
+.woocommerce-error {
+    border-top-color: #EF4444 !important;
+}
+.woocommerce-message::before, .woocommerce-info::before, .woocommerce-error::before {
+    color: #FBBF24 !important;
+    left: 1.25rem !important;
+}
+.woocommerce-error::before {
+    color: #EF4444 !important;
+}
+.woocommerce-message .button, .woocommerce-info .button {
+    background-color: #FBBF24 !important;
+    color: #111827 !important;
+}
+
+/* TeraWallet tablolarını temaya uydur */
+.woo-wallet-transactions-wrapper table {
+    width: 100%;
+}
+.woo-wallet-transactions-wrapper th {
+    background-color: #374151;
+    color: #F3F4F6;
+}
+.woo-wallet-transactions-wrapper td {
+    border-bottom: 1px solid #374151;
+}
+
+/* ==========================================================================
+   6. Yazdırma Görünümü Stilleri
+   ========================================================================== */
+
+/* Rapor sayfalarında "Yazdır" butonuna basıldığında uygulanacak stiller */
+@media print {
+    body * {
+        visibility: hidden; /* Önce her şeyi gizle */
+    }
+    .print-area, .print-area * {
+        visibility: visible; /* Sonra sadece yazdırılacak alanı göster */
+    }
+    .print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+    /* Yazdırma sırasında gereksiz butonları ve formları gizle */
+    .no-print {
+        display: none !important;
+    }
+}
